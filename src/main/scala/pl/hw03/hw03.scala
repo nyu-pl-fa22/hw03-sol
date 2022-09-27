@@ -53,13 +53,13 @@ object hw03 extends App:
   def isStrictlySorted(a: Array[Int]): Boolean = 
     require (a != null) // make sure that 'a' is non-null
 
-    var i = 0
+    var i = 1
 
-    while i < a.length && (i == 0 || a(i - 1) < a(i)) do
+    while i < a.length && a(i - 1) < a(i) do
       i = i + 1
     end while
 
-    a.length == i
+    a.length <= i
 
   def binarySearch(x: Int, a: Array[Int]): Int = 
     require (a != null && isStrictlySorted(a)) // make sure that 'a' is non-null and sorted
