@@ -1,10 +1,27 @@
-predicate strictlySorted(a: array<int>) {
-  forall j1, j2: int :: 0 <= j1 < a.Length && j1 < j2 < a.Length ==> a[j1] < a[j2]
+predicate strictlySorted(a: array<int>, i: int) 
+  reads a
+  requires 0 <= i <= a.Length
+{
+  forall j1, j2: int :: 0 <= j1 < i && j1 < j2 < i ==> a[j1] < a[j2]
 }
 
+method isStrictlySorted(a: array<int>) returns (res: bool)
+  ensures res == strictlySorted(a, a.Length)
+{
+  var i := 1;
+
+  while (i < a.Length && a[i-1] < a[i])
+    invariant 0 <= i <= a.Length || a.Length == 0
+    invariant i <= a.Length ==> strictlySorted(a, i)
+  {
+    i := i + 1;
+  }
+  res := i >= a.Length;
+}
+
+
 method binarySearch(x: int, a: array<int>) returns (i: int)
-  requires a != null
-  requires strictlySorted(a)
+  requires strictlySorted(a, a.Length)
   ensures 0 <= i <= a.Length
   ensures i < a.Length ==> x <= a[i]
   ensures 0 < i ==> a[i-1] < x
@@ -15,10 +32,10 @@ method binarySearch(x: int, a: array<int>) returns (i: int)
 
     while (l < r && !found)
       invariant 0 <= l && l <= r && r <= a.Length
-      invariant r == a.length || x == a[l] || x < a[r]
-      invariant 0 >= l || a[l - 1] < x
-      invariant r >= a.Length - 1 || x < a[r + 1]
+      invariant r == a.Length || x < a[r]
+      invariant l <= 0 || a[l - 1] < x
       invariant found ==> 0 <= i < a.Length && a[i] == x
+      decreases r - l, !found
     {
       var m := l + (r - l) / 2;
 
@@ -32,6 +49,6 @@ method binarySearch(x: int, a: array<int>) returns (i: int)
       }
     }
     if (!found) {
-      i := r + 1
+      i := r;
     }
 }
