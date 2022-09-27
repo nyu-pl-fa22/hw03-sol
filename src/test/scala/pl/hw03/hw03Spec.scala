@@ -11,7 +11,7 @@ class hw03Spec extends AnyFlatSpec {
   "numToWords" should "convert a number to full words" in {
     assert(numToWords(175) === "one-seven-five")
     assert(numToWords(3000) === "three-zero-zero-zero")
-    assert(numToWords(3000) === "three-zero-zero-zero")
+    assert(numToWords(3501) === "three-five-zero-one")
     assert(numToWords(1) === "one")
     assert(numToWords(0) === "zero")
   }
